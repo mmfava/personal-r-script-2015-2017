@@ -1,0 +1,188 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage[brazil]{babel}
+\usepackage[T1]{fontenc}
+\usepackage{natbib,float}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\begin{document}
+\SweaveOpts{concordance=TRUE}
+
+\title{Aula Prática de Bioestatística - Teste T}
+\author{"Seu nome"}
+\maketitle
+
+\section{Teste t de Student}
+
+De maneira geral, o teste t de Student possui o objetivo de comparar a média de duas amostras, sejam elas dependentes ou independentes entre sí. Este é um dos procedimentos mais comuns na literatura cientifíca relacionada a saúde.\\
+O teste t é bastante usado em situações de pesquisa cientifica, e as suas hipóteses estatísticas são definidas a seguir:\\
+
+\textbf{H0:} As médias de Xa e Xb são iguais\\
+
+\textbf{H1:} As médias de Xa e Xb são diferentes\\
+
+Também existem situações onde a H1 ganha variações, sendo essas realizadas com base na literatura com mesmo com a visualização de um resumo dos dados atraves de análise descritiva:\\
+
+\textbf{H1:} As médias de Xa > Xb \\
+
+\textbf{H1:} As médias de Xa < Xb \\
+
+\subsection{Pressupostos}
+Para emprego do teste t (seja para amostras dependentes ou independentes), alguns pressupostos devem ser atendidos:\\
+
+1. Os dados devem apresentar distribuição normal. A normalidade pode ser verificada de maneira visual por gráficos do tipo box-plot ou qqplot, ou pode ser aferida atráves de um teste estatístico. Existem vários tipos de testes de normalidade, mas nós usaremos o teste de Shapiro-Wilk na aula de hoje:
+<<>>=
+# qqplot()
+# boxplot()
+# shapiro.test() # comando do teste de normalidade
+@
+\\
+* Lembrando que cada grupo deve ser testado quanto a normalidade dos dados. 
+\\
+
+
+2. Os dados devem ser homocedasticos, ou seja, devem apresentar variâncias aproximadamente normais. A homocedasticidade também pode ser verificada visualmente pelo gráfico box-plot e ser aferida por um teste estatístico. Assim como a normalidade, a homocedasticidade pode ser aferida por um rol de testes estatísticos, mas na presente disciplina será utilizado o teste F:
+<<>>=
+# var.test() # 
+@
+\\
+* Lembrando que os dois grupos devem estar no comando teste 
+\\
+
+\subsection{Teste t no R}
+
+\subsubsection{Teste t para amostras independentes}
+
+Comparar duas amostras independentes uma da outra. 
+Por exemplo: Grupo controle e grupo experimento.\\
+
+<<>>=
+# t.test(“DADOS 1”, “DADOS 2”, alternative = c("two.sided"), paired = FALSE, var.equal = FALSE, conf.level = 0.95)
+@
+
+
+\subsubsection{Teste t para amostras dependentes}
+
+
+Comparar a mesma amostra duas vezes, em duas ocasiões.
+Por exemplo: Antes e depois de uma intervenção.\\
+
+<<>>=
+# t.test(“DADOS 1”, “DADOS 2”, alternative = c("two.sided"), paired = TRUE, var.equal = FALSE, conf.level
+@
+
+* Digitalizar a tabela impressa e colar ela aqui.
+  Fazer a tabela pelo site: http://www.tablesgenerator.com/latex_tables
+
+\subsubsection{Exemplos:}
+
+\textbf{Exemplo 1:} Para verificar se duas drogas diferentes, usadas como antitussíngenos (bloqueadores de tosse), alteram o tempo de sono, foi feito um ensaio com 9 voluntários, sendo o tempo de sono (em horas) dados a seguir:\\
+
+Entrando com os dados
+<<>>=
+A=c(7,7,6,6,9,6,7,8,5)
+B=c(9,7,6,8,10,8,7,8,7)
+@
+\\
+
+A pergunta do presente estudo é a seguinte: Será que existe diferença no tempo de sono entre as drogas?\\
+
+Com isso, responda as seguintes questões:\\
+
+a. Qual tipo de teste t deve ser aplicado neste caso?
+\\
+b. Quais são as hipóteses estatísticas a serem testadas para o presente estudo?
+\\
+c. Os pressupostos são atendidos?
+\\
+Box-plot:
+<<>>=
+# boxplot()
+@
+\\
+Normalidade:
+<<>>=
+# shapiro.test()
+# shapiro.test()
+@
+\\
+Homocedasticidade:
+<<>>=
+# var.test()
+@
+\\
+d. As amostras são iguais?
+<<>>=
+# t.test()
+@
+\\
+e. Escreve um pequeno texto resposta. 
+\\
+
+\textbf{Exemplo 2:} Com a finalidade de testar se uma dieta para perca de peso funciona, uma nutricionista pesou um grupo de pacientes antes e depois da dienta, com os valores dados a seguir:
+<<>>=
+DA=c(77,62,61,80,90,72,86,59,88)
+DB=c(80,58,61,76,79,69,90,51,81)
+@
+\\
+Sendo assim, responda:
+
+a. Qual tipo de teste t deve ser aplicado neste caso?
+\\
+b. Quais são as hipóteses estatísticas a serem testadas para o presente estudo?
+\\
+c. Os pressupostos são atendidos?
+\\
+Box-plot:
+<<>>=
+# boxplot()
+@
+\\
+Normalidade:
+<<>>=
+# shapiro.test()
+# shapiro.test()
+@
+\\
+Homocedasticidade:
+<<>>=
+# var.test()
+@
+\\
+d. As amostras são iguais?
+<<>>=
+# t.test()
+@
+\\
+
+\textbf{Exemplo 3:} Um certo médico deseja saber se a sua amostra de pacientes apresenta níveis de glicemia dentro do padrão normal (<100 mg/dl).
+<<>>=
+PG=c(110,90,97,99, 102,103,98.5,99.2,107)
+@
+\\
+Sendo assim responda:
+a. Qual tipo de teste t deve ser aplicado neste caso?
+\\
+b. Quais são as hipóteses estatísticas a serem testadas para o presente estudo?
+\\
+c. Os pressupostos são atendidos?
+\\
+Box-plot:
+<<>>=
+# boxplot()
+@
+\\
+Normalidade:
+<<>>=
+# shapiro.test()
+# shapiro.test()
+@
+\\
+d. Os valores de glicemia estão de acordo com o padrão outro?
+<<>>=
+# t.test()
+@
+\\
+
+\end{document}
