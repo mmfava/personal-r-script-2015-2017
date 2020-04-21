@@ -1,8 +1,8 @@
 
 
-## Bem vindo!  
+## Bem vind_!  
 
-Oie, bem-vindo.
+Oie, bem-vind_.
 
 Este é o repositório de alguns scripts R de cursos que participei ou ministrei. 
 
