@@ -1,0 +1,247 @@
+## Regressão e Correlação 
+## Marília Melo Favalesso 
+## Mestranda do programa de conservação e manejo de ambientes naturais
+## Universidade Estadual do Oeste do Paraná
+
+## VAR. QUANTI ~ VAR. QUANTI
+
+## -- A correlação -- ##
+
+# A correlação tem como objetivo avaliar se existe associação entre duas variáveis quantitativas.
+# A correlação deve ser feita com variáveis (características) de um mesmo objeto em estudo 
+# (podem ser variáveis medidas em um mesmo indivíduo, em um mesmo local, etc).
+
+# Existem duas formas de avaliar a associação entre variáveis: a partir de um gráfico de correlação
+# e por índices de correlação.
+
+## --> Banco de dados
+cor <- matrix(c(8, 7, 6, 3, 3, 6, 5, 2, 10, 8, 6, 8, 6, 9, 7, 4), nrow = 8, ncol = 2)
+colnames(cor) <- c("x (horas)", "y (notas)")
+rownames(cor) <- c("Hermione", "Cho", "Rony", "Draco", "Harry", "Neville", "Gina", "Luna")
+cor
+attach(cor)
+
+## --> Gráfico de dispersão
+plot(cor, main = "Gráfico de dispersão", ylab = "Notas dos alunos", xlab = "Horas de estudo", col = "blue")
+
+## --> Coeficiente de correlação (r)
+# Uma maneira de se avaliar a correlação é usar o coeficiente, que tem a vantagem de ser um 
+# número puro, isto é, independente da unidade de medida das variáveis. Esse coeficiente r é uma 
+# medida da intensidade de associação existente entre duas variáveis quantitativas.
+
+# Variação no coeficiente de correlação
+# O coeficiente de correlação pode variar entre -1 e +1. Valores negativos de r indicam uma correlação 
+# inversa, isto é, quando x aumenta, y em média diminui (ou vice-versa). Valores positivos para r 
+# ocorrem quando a correlação é direta, isto é, quando x e y variam no mesmo sentido. O valor máximo 
+# de correlação (+1 ou -1) é obtido quando todos os pontos do diagrama de dispersão formam uma linha reta 
+# inclinada. Quando não existe associação entre as variáveis, no diagrama de dispersão as nuvens estarão 
+# em formato circular.
+
+## --> Pressupostos para a correlação linear de Pearson
+
+## Normalidade
+shapiro.test(cor[, 1])
+shapiro.test(cor[, 2])
+
+## Homocedasticidade
+var.test(cor[, 1], cor[, 2])
+
+## --> Aplicação da correlação de Pearson
+
+# Interpretação do coeficiente r segundo Callegari-Jacques (olhar para os valores em módulo):
+# r = 0: A correlação é nula (ou inexistente)
+# 0-0,3: A correlação é muito fraca
+# 0,3-0,6: Correlação moderada
+# 0,6-0,9: Correlação forte entre as variáveis
+# 0,9-1: Correlação muito forte entre as variáveis
+# r = 1: A correlação é plena ou perfeita
+
+cor(cor[, 1], cor[, 2], method = "pearson")
+cor(cor, method = "pearson")
+
+# Se as variáveis não estivessem em normalidade ou homocedasticidade, teria que ter utilizado
+# o método de correlação de postos de Spearman. No lugar de 'method = "pearson"' você colocaria
+# 'method = "spearman"'. 
+
+## --> Associação é significativa?
+cor.test(cor[, 1], cor[, 2], method = "pearson")
+
+## --> Interpretação:
+# ESCREVA AQUI O RESULTADO DA SUA ANÁLISE!!
+
+## ----------------------------------------------------------------------------------------##
+
+## -- A regressão linear -- ##
+
+# O estudo de regressão aplica-se àquelas situações em que há razões para supor
+# uma relação de causa-efeito entre duas variáveis quantitativas e se deseja
+# expressar matematicamente essa relação. Ou seja:
+
+# Y ~ X (Y depende de X, ou Y é função de X)
+
+# Em um estudo de regressão, os valores da variável independente (X) geralmente
+# são escolhidos, e para cada valor escolhido observa-se o valor de Y correspondente.
+
+# Dessa forma, o objetivo de um estudo de regressão é:
+
+# a) Avaliar uma possível dependência de Y em relação a X;
+# b) Expressar matematicamente esta relação por meio de uma equação:
+#    Y = B0 + B1.X
+
+# Para encontrar os coeficientes B0 e B1 é utilizado o método dos mínimos
+# quadrados.
+
+## Passo-a-passo da regressão linear no R
+
+## --> 1 - Fazer o gráfico de dispersão entre as variáveis e testar a correlação 
+
+# Plot:
+plot(cor, main = "Gráfico de dispersão", ylab = "Notas dos alunos", xlab = "Horas de estudo", col = "blue")
+
+# Pressupostos da correlação (que também valem para a regressão linear)
+shapiro.test(cor[, 1])
+shapiro.test(cor[, 2])
+var.test(cor[, 1], cor[, 2])
+
+# Testando a correlação
+cor.test(cor[, 1], cor[, 2], method = "pearson")
+
+## --> Regressão Y ~ X
+
+# A equação da reta da LM pode ser dada por:
+# Y = B0 + B1.X
+# Onde: 
+# Y = variável dependente
+# B0 = Parâmetro ou coeficiente linear (valor de Y quando X = 0)
+# B1 = Parâmetro ou coeficiente angular (inclinação da reta, acréscimo ou
+# decréscimo em Y para cada acréscimo de uma unidade em X)
+# X = variável independente
+
+regressao <- lm(cor[, 2] ~ cor[, 1]) # Ajuste da regressão
+summary(regressao)
+
+## Teste de significância da Regressão
+# O coeficiente de regressão B1 é testado para verificar se há uma dependência real de Y em relação a X.
+
+## Desenrolando os resultados:
+# 1. Estimate Std = Valor dos interceptos β0 e β1
+# 2. Error = Erro padrão da média estandardizado
+# 3. T-valor = T calculado
+# 4. Pr(>|t|)  = P-valor do teste
+# * Multiple R-squared: Coeficiente de determinação (R²) - O quanto da variação das notas
+#   é explicada pelas horas de estudo.
+
+## Normalidade dos resíduos 
+# Uma pressuposição importante para o teste estatístico da regressão é a de que a variação dos pontos em relação à média (reta) seja a mesma nas várias "subpopulações", ou para cada valor de X.
+# Para testar tal suposição, nos extraímos os valores de resíduos da amostra e então aplicamos um teste de normalidade dos resíduos.
+
+## Preditos e resíduos
+preditos <- predict(regressao) # Valores esperados de Y para cada valor de X
+residuos <- resid(regressao) # Diferença entre os valores esperados (média Y) e os observados (cada valor).
+
+# A seguinte apresentação tabular pode ser usada para resumir as informações
+result <- data.frame(cor[, 2], cor[, 1], preditos, residuos)
+colnames(result) <- c("Notas", "Horas Estudadas", "Valores Preditos", "Resíduos (Predito - Observado)")
+result
+
+## Normalidade dos resíduos
+shapiro.test(residuos)
+
+## --> Gráfico de regressão linear
+
+## Para finalizar a análise, caso essa seja verdadeira, é feito um 
+## gráfico plot com a linha de regressão e os resíduos.
+
+plot(cor[, 2] ~ cor[, 1], ylab = "Notas", xlab = "Horas de estudo") # Gráfico de dispersão
+abline(regressao, col = "red") # Reta de regressão
+segments(cor[, 1], cor[, 2], cor[, 1], preditos, col = "blue") # Resíduos (distância prevista - observada)
+
+## --> INTERPRETAÇÃO
+## ESCREVA AQUI A CONCLUSÃO DA ANÁLISE.
+
+## ----------------------------------------------------------------------------------------##
+
+## -- Atividades para aplicação de correlação e regressão -- ##
+
+# 1 - Foram medidas 6 árvores de uma mesma espécie e o pesquisador deseja saber
+#     se existe associação entre a altura e o diâmetro da árvore (ou seja, quando uma cresce 
+#     a outra cresce também)
+
+# Variáveis
+arvores <- matrix(c(1.74, 1.93, 2.41, 5.94, 7.33, 9.27, 10, 12, 14, 23, 40, 59), nrow = 6, ncol = 2)
+colnames(arvores) <- c("Altura", "Diâmetro")
+rownames(arvores) <- c("Árvore 1", "Árvore 2", "Árvore 3", "Árvore 4", "Árvore 5", "Árvore 6")
+arvores
+
+# 1. Pressupostos avaliados:
+
+# 1.a. Normalidade
+shapiro.test(arvores[, 1]) # Avaliar normalidade da altura
+shapiro.test(arvores[, 2]) # Avaliar a normalidade do diâmetro
+
+# 1.b. Homocedasticidade
+var.test(arvores[, 1], arvores[, 2]) # Avaliar se altura e diâmetro variam da mesma forma
+
+# 2. Gráfico de dispersão
+plot(arvores[, 1], arvores[, 2], main = "Gráfico de dispersão", ylab = "Diâmetro", xlab = "Altura")
+
+# 3. Correlação de Pearson
+# 3.1 Coeficiente de correlação
+cor(arvores[, 1], arvores[, 2], method = "pearson")
+
+# 3.2 Teste de significância
+cor.test(arvores[, 1], arvores[, 2], method = "pearson")
+
+# 4. Escreva a resposta
+
+## --------------------------------------------------------------
+
+## 2 - Existe relação funcional entre a altura da árvore e o seu diâmetro? Ou seja, será que
+##     quanto maior o indivíduo obrigatoriamente mais largo ele será?
+
+## Diâmetro ~ Altura
+
+# 1. Criando o modelo
+m1 <- lm(arvores[, 2] ~ arvores[, 1])
+summary(m1) # Resultado do modelo
+
+# 2. Coeficientes do modelo
+# Intercepto (B0) e inclinação (B1)
+m1$coefficients
+
+# 3. Validação do modelo
+# 3.a Valores de preditos e resíduos
+predito <- fitted(m1)
+residuo <- resid(m1)
+
+# 3.b Normalidade dos resíduos
+shapiro.test(residuo)
+
+# 4. Plot dos dados
+plot(arvores[, 1], arvores[, 2], main = "Gráfico de dispersão", ylab = "Diâmetro", xlab = "Altura")
+abline(m1, col = "red")
+segments(arvores[, 1], arvores[, 2], arvores[, 1], predito, col = "blue")
+
+# 5. A regressão é significativa?
+summary(m1)
+
+## Multiple R-squared é interpretado quando ambos os coeficientes são 
+## significativos (B0 e B1)
+## Adjusted R-squared é interpretado quando aceito somente o coeficiente angular 
+
+## ESCREVA A SUA RESPOSTA:
+## ...
+
+## Vamos brincar? diâmetro = 5.832 * altura - 1.49
+
+# altura 1.74m
+5.832 * 1.74 - 1.49
+
+# altura 2.41m
+5.832 * 2.41 - 1.49
+
+# altura 9.27m
+5.832 * 9.27 - 1.49
+
+# altura 10m
+5.832 * 10 - 1.49
